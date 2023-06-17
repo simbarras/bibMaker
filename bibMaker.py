@@ -41,7 +41,7 @@ class Bibliography:
     author = ""
     year = ""
     howPublished = ""
-    note = ""
+    note = []
 
     def __init__(self, url):
         self.howPublished = url
@@ -66,24 +66,25 @@ class Bibliography:
         self.url = url
         return self
 
-    def set_note(self, note) -> Any:
-        self.note = note
+    def add_note(self, n) -> Any:
+        self.note.append(n)
         return self
-    
-    def __call__(self, ) -> str:
+
+    def __str__(self) -> str:
         # Create slug from title and author using snake case
         # i.e: title = "Dormand-Prince method", author = "John Doe" -> slug = "dormandPrinceMethodJohnDoe"
         self.slug = self.title.replace(" ", "_").lower() + "_" +self.author.replace(" ", "_").lower()
-        return self.__str__()
-
-
-    def __str__(self) -> str:
+        note_str = "["
+        for n in self.note[:-1]:
+            note_str += f"{n}; "
+        note_str += self.note[-1]
+        note_str += "]"
         return f"""@misc{{{self.slug},
-    title = {{{self.title}}},
-    author = {{{self.author}}},
-    year = {{{self.year}}},
-    howpublished = {{{self.howPublished}}},
-    note = {{{self.note}}}
+    author = "{{{self.author}}}",
+    title = "{{{self.title}}}",
+    year = "{self.year}",
+    howpublished = "\\url{{{self.howPublished}}}; accessed {time.strftime("%d-%B-%Y", time.localtime())}",
+    note = "{note_str}"
 }}"""
 
 
